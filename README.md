@@ -30,7 +30,7 @@ pip install -r requirements.txt
 
 ```bash
 # 4. 엔드투엔드 파이프라인 소스코드 통합 실행
-python code/ids_proiect_final.py
+python code/ids_project_final.py
 
 ```
 
