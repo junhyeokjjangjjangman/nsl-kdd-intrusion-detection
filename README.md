@@ -1,8 +1,14 @@
+깃허브 저장소 메인 화면에 배치할 `README.md` 파일용 최종 내용임. 교수님의 요구 조건인 **'Pandas/Scikit-learn 스타일의 함수 매뉴얼 및 명세서'** 요건을 완벽히 충족하도록 정리본의 내용을 고도화하여 작성함.
+
+전체 내용을 그대로 복사해서 `README.md` 파일에 붙여넣어 사용하면 됨.
+
+---
+
 # NSL-KDD 기반 네트워크 침입 탐지 시스템 (IDS) 파이프라인
 
 본 프로젝트는 대규모 네트워크 트래픽 데이터셋인 NSL-KDD를 활용하여 정상 트래픽과 해킹(공격) 트래픽을 정교하게 이진 분류하는 머신러닝 파이프라인 시스템임. 데이터 과학 5조의 텀프로젝트 결과물로, 데이터 전처리부터 최적 모델 최적화 및 오픈소스 SW 규격화를 달성함.
 
-## 1. Installation & Usage
+## 1. 환경 설정 및 실행 방법 (Installation & Usage)
 
 ### 가상환경 구축 및 패키지 설치
 
@@ -34,42 +40,46 @@ python code/ids_proiect_final.py
 
 전체 빅데이터 처리 공정은 단일 데이터 흐름 시스템으로 유기적으로 연결됨.
 
-1. 데이터셋 로드 및 품질 검증 (Data Inspection): KDDTrain+.txt 및 KDDTest+.txt 데이터를 Pandas 기반으로 로드함. 데이터 크기(Train: 125,973행, Test: 22,544행) 및 결측치, 이상치, 클래스 불균형 등 데이터 품질 요소를 다각도로 검정함.
-2. 레이블 이진화 (Label Binarization): 다중 클래스로 구성된 공격 유형을 정상 트래픽(0)과 해킹 트래픽(1)으로 이진화 처리함.
-3. 컬럼별 전처리 변환기 (Column Transformer): 수치형 피처와 범주형 피처를 분리하여 맞춤형 전처리를 동시 실행함. 수치형 데이터는 SimpleImputer 및 StandardScaler를 통과시키고, 문자열 범주형 데이터는 OneHotEncoder를 통해 고차원 수치 벡터로 변환함.
-4. 하이퍼파라미터 반복 실험 (Hyperparameter Tuning): Decision Tree 알고리즘의 max_depth와 criterion 옵션을 조합한 총 12가지 실험 알고리즘을 자동화 루프로 비교 분석함. 최고 F1-score를 기록한 조합을 베스트 모델로 강제 채택함.
-5. 교차 검증 및 평가 (Robust Evaluation): 채택된 최종 모델을 대상으로 데이터 레이블 비율을 보존하는 5-Fold StratifiedKFold 교차 검증을 수행하여 일반화 성능을 입증함.
-6. 시각화 및 결과 파일 자동 저장 (Outputs): 최종 산출물(오차 행렬, 피처 중요도 분석 그래프, CSV 성능 평가표)을 지정된 outputs/ 폴더 내에 이미지와 파일로 영구 저장함.
+1. **데이터셋 로드 및 품질 검증 (Data Inspection):** `KDDTrain+.txt` 및 `KDDTest+.txt` 데이터를 Pandas 기반으로 로드함. 데이터 크기(Train: 125,973행, Test: 22,544행) 및 결측치, 이상치, 클래스 불균형 등 데이터 품질 요소를 다각도로 검정함.
+2. **레이블 이진화 (Label Binarization):** 다중 클래스로 구성된 공격 유형을 정상 트래픽(`0`)과 해킹 트래픽(`1`)으로 이진화 처리함.
+3. **컬럼별 전처리 변환기 (Column Transformer):** 수치형 피처와 범주형 피처를 분리하여 맞춤형 전처리를 동시 실행함. 수치형 데이터는 `SimpleImputer` 및 `StandardScaler`를 통과시키고, 문자열 범주형 데이터는 `OneHotEncoder`를 통해 고차원 수치 벡터로 변환함.
+4. **하이퍼파라미터 반복 실험 (Hyperparameter Tuning):** Decision Tree 알고리즘의 `max_depth`와 `criterion` 옵션을 조합한 총 12가지 실험 알고리즘을 자동화 루프로 비교 분석함. 최고 F1-score를 기록한 조합을 베스트 모델로 강제 채택함.
+5. **교차 검증 및 평가 (Robust Evaluation):** 채택된 최종 모델을 대상으로 데이터 레이블 비율을 보존하는 5-Fold `StratifiedKFold` 교차 검증을 수행하여 일반화 성능을 입증함.
+6. **시각화 및 결과 파일 자동 저장 (Outputs):** 최종 산출물(오차 행렬, 피처 중요도 분석 그래프, CSV 성능 평가표)을 지정된 `outputs/` 폴더 내에 이미지와 파일로 영구 저장함.
 
 ---
 
 ## 3. 핵심 오픈소스 함수 명세서 (API Specification)
 
-교수님 지침 요건에 의거하여, 본 프로젝트의 모든 전처리 및 머신러닝 프로세스를 관장하는 최상위 단일 함수를 Scikit-learn 공식 문서 스타일로 규격화하여 선언함.
+본 프로젝트의 모든 전처리 및 머신러닝 프로세스를 관장하는 최상위 단일 함수를 Scikit-learn 공식 문서 스타일로 규격화하여 선언함.
 
-### run_ids_pipeline()
+### `run_ids_pipeline()`
 
-Description
+**Description**
 
-* Execute the complete end-to-end Network Intrusion Detection System (IDS) workflow.
+> Execute the complete end-to-end Network Intrusion Detection System (IDS) workflow.
 
-Parameters
+**Parameters**
 
-* None
-* 본 함수는 독립형 모듈 파이프라인으로, 실행 시 내부적으로 고정된 로컬 데이터 경로(data/KDDTrain+.txt, data/KDDTest+.txt)를 참조하여 구동됨.
+* **None**
+* 본 함수는 독립형 모듈 파이프라인으로, 실행 시 내부적으로 고정된 로컬 데이터 경로(`data/KDDTrain+.txt`, `data/KDDTest+.txt`)를 참조하여 구동됨.
 
-Returns
 
-* None
-* 별도의 실행 객체를 반환하지 않고, 수치 레포트 및 시각화 플롯 결과물을 로컬 디렉터리(outputs/)에 파일로 직접 쓰기 처리를 수행함.
 
-Output Artifacts (Generated Files)
+**Returns**
 
-* outputs/decision_tree_experiment_results.csv : 하이퍼파라미터 조합별 실험 데이터 세부 수치 표
-* outputs/cross_validation_results.csv : 5-Fold 교차 검증 개별 스코어 및 평균치 데이터
-* outputs/confusion_matrix_best_decision_tree.png : 베스트 모델의 오차 행렬 시각화 그래프
-* outputs/feature_importance.csv : 원-핫 인코딩 컬럼이 포함된 전체 피처별 중요도 랭킹 수치
-* outputs/feature_importance_top20.png : 분류 예측에 가장 기여도가 높은 상위 20개 피처 바 차트
+* **None**
+* 별도의 실행 객체를 반환하지 않고, 수치 레포트 및 시각화 플롯 결과물을 로컬 디렉터리(`outputs/`)에 파일로 직접 쓰기(Write) 처리를 수행함.
+
+
+
+**Output Artifacts (Generated Files)**
+
+* `outputs/decision_tree_experiment_results.csv` : 하이퍼파라미터 조합별 실험 데이터 세부 수치 표
+* `outputs/cross_validation_results.csv` : 5-Fold 교차 검증 개별 스코어 및 평균치 데이터
+* `outputs/confusion_matrix_best_decision_tree.png` : 베스트 모델의 오차 행렬 시각화 그래프
+* `outputs/feature_importance.csv` : 원-핫 인코딩 컬럼이 포함된 전체 피처별 중요도 랭킹 수치
+* `outputs/feature_importance_top20.png` : 분류 예측에 가장 기여도가 높은 상위 20개 피처 바 차트
 
 ---
 
@@ -95,5 +105,6 @@ Output Artifacts (Generated Files)
 ---
 
 ## 5. 최종 분석 결과 요약 (Key Findings)
-일반화 성능 검증 수치: 5-Fold 교차 검증 결과, 최종 평균 F1-score 96.7%를 기록하여 초기 제안서 목표치에 부합하는 고성능 안정성을 증명함.
-보안 실무 관점의 피처 해석: 특성 중요도 분석 결과, 출발지에서 목적지로 보내는 바이트 크기를 뜻하는 src_bytes 피처의 중요도가 약 0.706으로 지배적인 영향력을 행사함이 밝혀짐. 이는 비정상적인 대용량 페이로드 주입 및 네트워크 스캔 공격을 탐지하는 실제 사이버 보안 시스템의 탐지 메커니즘과 일치하는 유의미한 데이터 과학적 성과임.
+
+* **일반화 성능 검증 수치:** 5-Fold 교차 검증 결과, 최종 평균 F1-score 96.7%를 기록하여 초기 제안서 목표치에 부합하는 고성능 안정성을 증명함.
+* **보안 실무 관점의 피처 해석:** 특성 중요도(Feature Importance) 분석 결과, 출발지에서 목적지로 보내는 바이트 크기를 뜻하는 `src_bytes` 피처의 중요도가 약 0.706으로 지배적인 영향력을 행사함이 밝혀짐. 이는 비정상적인 대용량 페이로드 주입 및 네트워크 스캔 공격을 탐지하는 실제 사이버 보안 시스템의 탐지 메커니즘과 일치하는 유의미한 데이터 과학적 성과임.
