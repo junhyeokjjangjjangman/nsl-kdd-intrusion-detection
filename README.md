@@ -82,8 +82,60 @@ python code/ids_project_final.py
 * `outputs/feature_importance_top20.png` : 분류 예측에 가장 기여도가 높은 상위 20개 피처 바 차트
 
 ---
+## 4. 실습 미학습 고급 모듈 및 메서드 설명서 (Unlearned Modules)
 
-## 4. 저장소 디렉터리 구조 (Repository Structure)
+본 프로젝트의 파이프라인 고도화 및 오픈소스 SW 규격화를 위해 정규 실습 과정 외에 독립적으로 연구하여 적용한 핵심 라이브러리 및 속성 10가지에 대한 기술 명세임.
+
+### 1) Pipeline (sklearn.pipeline.Pipeline)
+- 기능: 전처리 단계부터 최종 모델의 학습 단계까지 전과정을 하나의 단일 체인으로 연결함.
+- 역할: 데이터 누수(Data Leakage)를 원천 차단하고 소스코드를 모듈화하는 데 활용함.
+- 매개변수: steps 파라미터에 (명칭, 객체) 형태의 튜플 리스트를 전달하여 실행 순서를 정의함.
+
+### 2) ColumnTransformer (sklearn.compose.ColumnTransformer)
+- 기능: 데이터프레임 내에서 각 컬럼의 특성에 따라 서로 다른 변환기를 독립적으로 적용함.
+- 역할: 수치형 피처에는 스케일링을, 범주형 피처에는 원-핫 인코딩을 동시에 매핑함.
+- 매개변수: transformers 파라미터에 (작업명, 변환기, 대상컬럼) 구조의 리스트를 지정함.
+
+### 3) StratifiedKFold (sklearn.model_selection.StratifiedKFold)
+- 기능: 레이블의 클래스 분포 비율을 원본과 동일하게 유지하며 데이터를 분할함.
+- 역할: 불균형한 해킹 트래픽 데이터셋을 균등하게 나누어 교차 검증의 신뢰성을 극대화함.
+- 매개변수: n_splits로 분할할 Fold 개수(5개)를 지정하고 shuffle로 무작위 섞음 여부를 제어함.
+
+### 4) ConfusionMatrixDisplay (sklearn.metrics.ConfusionMatrixDisplay)
+- 기능: 분류 모델의 오차 행렬 예측 결과를 시각적인 격자 그래프 플롯으로 변환함.
+- 역할: 정상과 공격 트래픽의 오탐 및 미탐 수치를 컬러맵이 적용된 이미지로 출력함.
+- 매개변수: .plot() 메서드를 호출하여 내부 행렬 데이터를 기반으로 그래프를 자동 렌더링함.
+
+### 5) SimpleImputer (sklearn.impute.SimpleImputer)
+- 기능: 데이터 수집 및 병합 과정에서 누락된 결측치(NaN)를 특정 전략으로 보간함.
+- 역할: 데이터 품질 이슈를 해결하기 위해 사용되었으며 본 프로젝트에서는 평균값 전략을 채택함.
+- 매개변수: strategy 파라미터를 'mean'으로 설정하여 수치형 컬럼의 평균치로 대입함.
+
+### 6) cross_val_score (sklearn.model_selection.cross_val_score)
+- 기능: 반복적인 for 루프 연산문 없이 교차 검증 스코어를 자동으로 계산함.
+- 역할: 각 Fold별 F1-score 점수를 배열 형태로 일괄 반환받아 모델 검증 능력을 높임.
+- 매개변수: estimator에 검증할 파이프라인을, cv에 분할기 객체를, scoring에 'f1' 지표를 매핑함.
+
+### 7) classification_report (sklearn.metrics.classification_report)
+- 기능: 최종 테스트 결과의 주요 분류 평가지표들을 텍스트 표 형태로 종합 반환함.
+- 역할: Accuracy, Precision, Recall, F1-score 수치를 클래스별 및 가중 평균치로 한눈에 검증함.
+- 매개변수: y_true(실제 정답 레이블)와 y_pred(모델 예측값) 배열을 각각 인자로 받음.
+
+### 8) .named_steps (Pipeline 내장 속성)
+- 기능: 복합적으로 결합된 Pipeline 내부에서 사용자가 명명한 고유 키 값을 기반으로 특정 객체에 접근함.
+- 역할: 학습 완료된 전체 파이프라인 중에서 최종 'classifier' 단계의 DecisionTree 객체를 호출함.
+- 활용: 분해된 모델 객체로부터 특성 중요도(feature_importances_) 속성을 추출하는 데 사용함.
+
+### 9) .named_transformers_ (ColumnTransformer 내장 속성)
+- 기능: ColumnTransformer 내부에 결합된 세부 독립 변환기 중 특정 전처리 객체에 이름으로 접근함.
+- 역할: 여러 전처리 공정 중 범주형 변수의 변환을 전담했던 'cat' 단계의 OneHotEncoder에 접근함.
+
+### 10) .get_feature_names_out() (변환기 하위 메서드)
+- 기능: 원-핫 인코딩 처리를 거치며 새롭게 분할된 고차원 컬럼들의 최종 텍스트 이름을 배열로 반환함.
+- 역할: 기존 범주형 변수명과 원-핫 벡터를 조합하여 최종 피처명(예: service_http 등)을 컴파일함.
+- 활용: 특성 중요도 수치와 피처 이름을 일대일 매핑하여 상위 20개 시각화 그래프 레이블로 출력함.
+
+## 5. 저장소 디렉터리 구조 (Repository Structure)
 
 ```text
 ├── data/
